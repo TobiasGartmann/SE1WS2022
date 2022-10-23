@@ -1,5 +1,6 @@
 package org.hbrs.se1.ws22.uebung3.persistence;
 
+import java.io.*;
 import java.util.List;
 
 public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
@@ -13,6 +14,11 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         this.location = location;
     }
 
+    private FileInputStream fis;
+    private ObjectInputStream ois;
+    private FileOutputStream fos;
+    private ObjectOutputStream oos;
+
     @Override
     /**
      * Method for opening the connection to a stream (here: Input- and Output-Stream)
@@ -20,7 +26,16 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * and save
      */
     public void openConnection() throws PersistenceException {
+        try {
+            fos = new FileOutputStream(location);
+            oos = new ObjectOutputStream(fos);
 
+            fis = new FileInputStream(location);
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            String msg = "Couldn't open connection!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
     }
 
     @Override
@@ -28,7 +43,15 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * Method for closing the connections to a stream
      */
     public void closeConnection() throws PersistenceException {
-
+        try {
+            fis.close();
+            ois.close();
+            fos.close();
+            oos.close();
+        } catch (IOException e) {
+            String msg = "Couldn't close connection!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
     }
 
     @Override
@@ -36,7 +59,12 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * Method for saving a list of Member-objects to a disk (HDD)
      */
     public void save(List<E> member) throws PersistenceException  {
-
+        try {
+            oos.writeObject(member);
+        } catch (IOException e) {
+            String msg = "Couldn't save stream!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
     }
 
     @Override
@@ -65,6 +93,16 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         // return newListe
 
         // and finally close the streams (guess where this could be...?)
-        return null;
+        List<E> list = null;
+        try {
+            Object o = ois.readObject();
+            if (o instanceof List<?>) {
+                list = (List<E>) o;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            String msg = "Couldn't load stream!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
+        return list;
     }
 }
