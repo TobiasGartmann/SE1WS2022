@@ -7,7 +7,7 @@ public interface Member {
      * explizit außerhalb der Container-Klasse zu belegen
      *  -> Primärschlüssel zur Unterscheidung aller Member-Objekte
      */
-    
+
     Integer getID();
 
     public String toString();
