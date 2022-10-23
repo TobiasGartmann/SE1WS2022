@@ -1,5 +1,4 @@
 package org.hbrs.se1.ws22.uebung3;
-
 public class Client {
     public void viewContainer() {
         Member m1 = new ConcreteMember(1);
