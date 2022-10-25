@@ -59,11 +59,11 @@ public class Container {
     public void store() throws PersistenceException {
         persistenceStrategy.openConnection();
         persistenceStrategy.save(list);
-        //persistenceStrategy.closeConnection();
+        persistenceStrategy.closeConnection();
     }
 
     public void load() throws PersistenceException {
-        //persistenceStrategy.openConnection();
+        persistenceStrategy.openConnection();
         list = (LinkedList<Member>) persistenceStrategy.load();
         persistenceStrategy.closeConnection();
     }
