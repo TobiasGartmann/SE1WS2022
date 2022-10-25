@@ -26,16 +26,10 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * and save
      */
     public void openConnection() throws PersistenceException {
-        try {
-            fos = new FileOutputStream(location);
-            oos = new ObjectOutputStream(fos);
-
-            fis = new FileInputStream(location);
-            ois = new ObjectInputStream(fis);
-        } catch (IOException e) {
-            String msg = "Couldn't open connection!";
-            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
-        }
+        /* Ich weiss nicht wie ich die ObjectStreams hier zu behandeln habe.
+        * Da die input und output streams beide jedes Mal geoeffnet werden,
+        * egal ob ein- oder ausgelesen wird, wird die gespeicherte Datei ueberschrieben,
+        */
     }
 
     @Override
@@ -44,10 +38,10 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      */
     public void closeConnection() throws PersistenceException {
         try {
-            fis.close();
-            ois.close();
-            fos.close();
-            oos.close();
+            if (fis != null) { fis.close(); }
+            if (ois != null) { ois.close(); }
+            if (fos != null) { fos.close(); }
+            if (oos != null) { oos.close(); }
         } catch (IOException e) {
             String msg = "Couldn't close connection!";
             throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
@@ -59,6 +53,14 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * Method for saving a list of Member-objects to a disk (HDD)
      */
     public void save(List<E> member) throws PersistenceException  {
+        try {
+            fos = new FileOutputStream(location);
+            oos = new ObjectOutputStream(fos);
+        } catch (IOException e) {
+            String msg = "Couldn't open connection!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
+
         try {
             oos.writeObject(member);
         } catch (IOException e) {
@@ -93,6 +95,14 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         // return newListe
 
         // and finally close the streams (guess where this could be...?)
+        try {
+            fis = new FileInputStream(location);
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            String msg = "Couldn't open connection!";
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable, msg);
+        }
+
         List<E> list = null;
         try {
             Object o = ois.readObject();
