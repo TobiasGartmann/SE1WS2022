@@ -1,8 +1,6 @@
 package org.hbrs.se1.ws22.uebung3;
 
 import org.hbrs.se1.ws22.uebung3.persistence.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -29,7 +27,7 @@ class ContainerTest {
     @Test
     public void flawedLocationTest() {
         PersistenceStrategyStream<Member> ps = new PersistenceStrategyStream<Member>();
-        ps.setLocation("C:\\Users\\2B\\Desktop\\");
+        ps.setLocation("test\\");
         con.setPersistenceStrategy(ps);
 
         Member m1 = new ConcreteMember(7);
@@ -45,7 +43,7 @@ class ContainerTest {
     @Test
     public void scenarioTest() {
         PersistenceStrategyStream<Member> ps = new PersistenceStrategyStream<Member>();
-        ps.setLocation("C:\\Users\\2B\\Desktop\\test.txt");
+        ps.setLocation("test\\test.txt");
         con.setPersistenceStrategy(ps);
 
         List<Member> tmp = con.getCurrentList();
