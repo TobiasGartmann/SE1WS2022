@@ -52,8 +52,8 @@ public class Container {
         return (List<Member>) list.clone();
     }
 
-    public void setPersistenceStrategy(PersistenceStrategy ps) {
-        persistenceStrategy = ps;
+    public void setPersistenceStrategy(PersistenceStrategy persistenceStrategy) {
+        this.persistenceStrategy = persistenceStrategy;
     }
 
     public void store() throws PersistenceException {
